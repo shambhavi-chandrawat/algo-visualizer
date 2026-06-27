@@ -1,3 +1,4 @@
+import { renderStep, clearStep } from "../ui/renderer.js";
 export const STEP_TYPES = {
     COMPARE: "compare",
     SWAP: "swap",
@@ -7,16 +8,9 @@ export const STEP_TYPES = {
 export async function playSteps(steps) {
     for (let i = 0; i < steps.length; i++) {
         const currentStep = steps[i];
-    if (currentStep.type === STEP_TYPES.COMPARE) {
-        console.log(`Comparing ${currentStep.first} and ${currentStep.second}`);
-    }
-    else if (currentStep.type === STEP_TYPES.SWAP) {
-        console.log(`Swapping ${currentStep.first} and ${currentStep.second}`);
-    }
-    else if (currentStep.type === STEP_TYPES.SORTED) {
-        console.log(`Bar ${currentStep.index} is sorted`);
-    }
-    await sleep (1000); //causes a 1 second wait after each step
+        renderStep(currentStep);
+        await sleep (1000); //causes a 1 second wait after each step
+        clearStep(currentStep);
   }
 }
 
