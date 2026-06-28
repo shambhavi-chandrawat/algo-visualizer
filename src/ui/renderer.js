@@ -6,12 +6,15 @@ export function renderStep(step) {
 
         const firstBar = bars[step.first];
         const secondBar = bars[step.second];
+        if (!firstBar || !secondBar) return; 
+
         firstBar.style.backgroundColor = "orange";
         secondBar.style.backgroundColor = "orange";
     }
-    else if ( step.type == STEP_TYPES.SWAP ){
+    else if ( step.type === STEP_TYPES.SWAP ){
         const firstBar = bars[step.first];
         const secondBar = bars[step.second];
+        if (!firstBar || !secondBar) return; 
 
         const tempHeight = firstBar.style.height;
         firstBar.style.height=secondBar.style.height;
@@ -19,6 +22,8 @@ export function renderStep(step) {
     }
     else if (step.type === STEP_TYPES.SORTED) {
     const sortedBar = bars[step.index];
+    if (!sortedBar) return;
+
     sortedBar.style.backgroundColor = "green";
 }
 }
@@ -29,8 +34,10 @@ export function clearStep(step) {
 
         const firstBar = bars[step.first];
         const secondBar = bars[step.second];
-        firstBar.style.backgroundColor = "steelblue";
-        secondBar.style.backgroundColor = "steelblue";
+        if (!firstBar || !secondBar) return; 
+        
+        firstBar.style.backgroundColor = firstBar.dataset.prevColor || "steelblue";;
+        secondBar.style.backgroundColor = secondBar.dataset.prevColor || "steelblue";;
     }
 
 }

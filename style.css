@@ -65,6 +65,7 @@ button,select{
     border-radius: 3px 3px 0 0;
     transition:
         height 0.3s,
-        background-color 0.3s;
-
+        background-color 0.3s ease;
 }
+.bar.comparing { background-color: orange; }
+.bar.sorted { background-color: green; }
