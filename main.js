@@ -1,5 +1,7 @@
 import { generateArray, renderArray } from "./src/core/array.js";
-import { STEP_TYPES, playSteps } from "./src/core/animationEngine.js";
+import { STEP_TYPES, playSteps, resumeAnimation } from "./src/core/animationEngine.js";
+
+console.log("main.js loaded");
 
 const array = generateArray();
 renderArray(array);
@@ -36,5 +38,22 @@ const fakeSteps = [
 
 ];
 
-console.log(fakeSteps);
-playSteps(fakeSteps);
+const playButton = document.getElementById("play-btn");
+const pauseButton = document.getElementById("pause-btn");
+const resumeButton = document.getElementById("resume-btn");
+const generateButton = document.getElementById("generate-btn");
+
+console.log(playButton);
+console.log(pauseButton);
+console.log(resumeButton);
+
+playButton.addEventListener("click", () => {
+    playSteps(fakeSteps);
+});
+pauseButton.addEventListener("click", () => {
+    pauseAnimation();
+});
+resumeButton.addEventListener("click", () => {
+    resumeAnimation();
+});
+

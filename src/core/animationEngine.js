@@ -1,20 +1,36 @@
 import { renderStep, clearStep } from "../ui/renderer.js";
-export const STEP_TYPES = {
-    COMPARE: "compare",
-    SWAP: "swap",
-    SORTED: "sorted"
-}; //for making our code safer and prevent future spelking mistakes
+import { STEP_TYPES } from "./stepTypes.js";
+
+export { STEP_TYPES }; // re-exported in case other files still import it from here
 
 let animationSteps = []; //which step will be executed
-let currentStepIndex = 0; //which step we are currently on 
+let currentStepIndex = 0; //which step we are currently on
 let isPlaying = false; //whether the engine is in pause or play mode
 
+//starting a new animation
 export async function playSteps(steps) {
+    if (isPlaying) return; // ignore calls while a run is already in progress
+
     animationSteps = steps;
     currentStepIndex = 0;
     isPlaying = true;
 
-    playNextStep();
+    await playNextStep(); //since playNextStep is an async function 
+}
+
+//pausing an animation
+export function pauseAnimation() {
+    console.log("pause button pressed");
+    isPlaying = false;
+}
+
+//for resuming the animation from the current index
+export async function resumeAnimation() {
+    if(isPlaying==true) //to prevent the engine from excuting the same step multiple times if we press the resume button more than once 
+        return; 
+
+    isPlaying = true;
+    await playNextStep();
 }
 
 //adding the sleep function
@@ -24,18 +40,24 @@ function sleep(ms) {
     });
 }
 
-//this will do the exedution of the steps 
+//this will do the execution of the step one at a time 
 async function playNextStep() {
     if (!isPlaying) {
+        return;
+    }
+    if (currentStepIndex >= animationSteps.length) {
+        isPlaying = false; // playback finished, reset flag
+        return;
+    }
+    const currentStep = animationSteps[currentStepIndex];
+    renderStep(currentStep);
+    await sleep(1000);
+
+    if (!isPlaying) { //to pause the animation where it is exactly and not perform the cleat step function 
     return;
-}
-if (currentStepIndex >= animationSteps.length) {
-    return;
-}
-const currentStep = animationSteps[currentStepIndex];
-renderStep(currentStep);
-await sleep(1000);
-clearStep(currentStep);
-currentStepIndex++;
-await playNextStep(); //this will wait until the next recursive call gets completed
+} 
+
+    clearStep(currentStep);
+    currentStepIndex++;
+    await playNextStep(); //this will wait until the next recursive call gets completed
 }
