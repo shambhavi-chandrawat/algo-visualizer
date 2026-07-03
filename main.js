@@ -1,59 +1,32 @@
 import { generateArray, renderArray } from "./src/core/array.js";
-import { STEP_TYPES, playSteps, resumeAnimation, pauseAnimation, } from "./src/core/animationEngine.js";
+import { STEP_TYPES } from "./src/core/stepTypes.js"; // import from source, not animationEngine
+import { playSteps, pauseAnimation, resumeAnimation } from "./src/core/animationEngine.js";
+import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 
 console.log("main.js loaded");
 
-const array = generateArray();
-renderArray(array);
-
-const fakeSteps = [
-    {
-        type: STEP_TYPES.COMPARE,
-        first: 0,
-        second: 1
-    },
-
-    {
-        type: STEP_TYPES.SWAP,
-        first: 0,
-        second: 1
-    },
-
-    {
-        type: STEP_TYPES.COMPARE,
-        first: 1,
-        second: 2
-    },
-
-    {
-        type: STEP_TYPES.SWAP,
-        first: 1,
-        second: 2
-    },
-
-    {
-        type: STEP_TYPES.SORTED,
-        index: 0
-    }
-
-];
+let currentArray = generateArray();
+renderArray(currentArray);
 
 const playButton = document.getElementById("play-btn");
 const pauseButton = document.getElementById("pause-btn");
 const resumeButton = document.getElementById("resume-btn");
 const generateButton = document.getElementById("generate-btn");
 
-console.log(playButton);
-console.log(pauseButton);
-console.log(resumeButton);
-
 playButton.addEventListener("click", () => {
-    playSteps(fakeSteps);
+    const steps = bubbleSort(currentArray); // use real steps, not fakeSteps
+    playSteps(steps);
 });
+
 pauseButton.addEventListener("click", () => {
     pauseAnimation();
 });
+
 resumeButton.addEventListener("click", () => {
     resumeAnimation();
 });
 
+generateButton.addEventListener("click", () => {
+    currentArray = generateArray(); // generate and store new array
+    renderArray(currentArray);     // re-render the bars
+});

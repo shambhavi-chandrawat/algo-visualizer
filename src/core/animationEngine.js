@@ -61,3 +61,9 @@ async function playNextStep() {
     currentStepIndex++;
     await playNextStep(); //this will wait until the next recursive call gets completed
 }
+
+export function resetAnimation() {
+    resetAnimation();
+    currentArray= generateArray(); 
+    renderArray(currentArray);
+}
