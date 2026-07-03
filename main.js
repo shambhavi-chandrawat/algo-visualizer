@@ -1,5 +1,5 @@
 import { generateArray, renderArray } from "./src/core/array.js";
-import { STEP_TYPES, playSteps, resumeAnimation } from "./src/core/animationEngine.js";
+import { STEP_TYPES, playSteps, resumeAnimation, pauseAnimation, } from "./src/core/animationEngine.js";
 
 console.log("main.js loaded");
 
