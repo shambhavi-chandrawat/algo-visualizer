@@ -26,7 +26,7 @@ export function pauseAnimation() {
 
 //for resuming the animation from the current index
 export async function resumeAnimation() {
-    if(isPlaying==true) //to prevent the engine from excuting the same step multiple times if we press the resume button more than once 
+    if(isPlaying) //to prevent the engine from excuting the same step multiple times if we press the resume button more than once 
         return; 
 
     isPlaying = true;
@@ -46,24 +46,41 @@ async function playNextStep() {
         return;
     }
     if (currentStepIndex >= animationSteps.length) {
-        isPlaying = false; // playback finished, reset flag
+        isPlaying = false;
         return;
     }
-    const currentStep = animationSteps[currentStepIndex];
-    renderStep(currentStep);
-    await sleep(1000);
-
-    if (!isPlaying) { //to pause the animation where it is exactly and not perform the cleat step function 
-    return;
-} 
-
-    clearStep(currentStep);
-    currentStepIndex++;
-    await playNextStep(); //this will wait until the next recursive call gets completed
+    await runSingleStep(true);
+    // Pause button may have been pressed while waiting
+    if (!isPlaying) {
+        return;
+    }
+    await playNextStep();
 }
 
 export function resetAnimation() {
     isPlaying = false;
     animationSteps = [];
     currentStepIndex = 0;
+}
+
+// Executes exactly ONE step
+async function runSingleStep(allowPause = false) {
+    const currentStep = animationSteps[currentStepIndex];
+    renderStep(currentStep);
+    await sleep(1000);
+    if (allowPause && !isPlaying) {
+        return;
+    }
+    clearStep(currentStep);
+    currentStepIndex++;
+}
+
+export async function stepForward() {
+     if (isPlaying) {
+        return;
+    }
+    if (currentStepIndex >= animationSteps.length) {
+        return;
+    }
+    await runSingleStep(false);
 }
