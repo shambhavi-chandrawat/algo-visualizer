@@ -63,7 +63,7 @@ async function playNextStep() {
 }
 
 export function resetAnimation() {
-    resetAnimation();
-    currentArray= generateArray(); 
-    renderArray(currentArray);
+    isPlaying = false;
+    animationSteps = [];
+    currentStepIndex = 0;
 }
