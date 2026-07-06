@@ -1,6 +1,5 @@
 import { generateArray, renderArray } from "./src/core/array.js";
-import { STEP_TYPES } from "./src/core/stepTypes.js"; // import from source, not animationEngine
-import { playSteps, pauseAnimation, resumeAnimation, resetAnimation, stepForward } from "./src/core/animationEngine.js";
+import { playSteps, pauseAnimation, resumeAnimation, resetAnimation, stepForward, getAnimationState } from "./src/core/animationEngine.js";
 import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 
 let currentArray = generateArray();
@@ -15,7 +14,10 @@ const resetButton = document.getElementById("reset-btn");
 const stepButton = document.getElementById("step-btn");
 
 playButton.addEventListener("click", () => {
-    const steps = bubbleSort(currentArray); // use real steps, not fakeSteps
+    if (getAnimationState() !== "idle") {
+        return;
+    }
+    const steps = bubbleSort(currentArray);
     playSteps(steps);
 });
 
@@ -29,13 +31,16 @@ resumeButton.addEventListener("click", () => {
 
 generateButton.addEventListener("click", () => {
     resetAnimation(); //reset the animation before generating a new array
+    playButton.disabled = false;
+
     currentArray = generateArray(); // generate and store new array
-    let originalArray = [...currentArray];
+     originalArray = [...currentArray];
     renderArray(currentArray);     // re-render the bars
 });
 
 resetButton.addEventListener("click", () => {
     resetAnimation();
+    playButton.disabled = false;
     currentArray = [...originalArray];
     renderArray(currentArray);
 });

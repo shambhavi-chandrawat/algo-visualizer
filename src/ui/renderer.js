@@ -7,14 +7,11 @@ export function renderStep(step) {
         const firstBar = bars[step.first];
         const secondBar = bars[step.second];
         if (!firstBar || !secondBar) return;
-
-        // remember current color before overwriting it
-        firstBar.dataset.prevColor = firstBar.style.backgroundColor;
-        secondBar.dataset.prevColor = secondBar.style.backgroundColor;
-
-        firstBar.style.backgroundColor = "orange";
-        secondBar.style.backgroundColor = "orange";
+        
+        firstBar.classList.add("comparing");
+        secondBar.classList.add("comparing");
     }
+
     else if (step.type === STEP_TYPES.SWAP) {
         const firstBar = bars[step.first];
         const secondBar = bars[step.second];
@@ -28,7 +25,7 @@ export function renderStep(step) {
         const sortedBar = bars[step.index];
         if (!sortedBar) return;
 
-        sortedBar.style.backgroundColor = "green";
+        sortedBar.classList.add("sorted");
     }
 }
 
@@ -39,8 +36,9 @@ export function clearStep(step) {
         const firstBar = bars[step.first];
         const secondBar = bars[step.second];
         if (!firstBar || !secondBar) return;
+        
+         firstBar.classList.remove("comparing");
+         secondBar.classList.remove("comparing");
 
-        firstBar.style.backgroundColor = firstBar.dataset.prevColor || "steelblue";
-        secondBar.style.backgroundColor = secondBar.dataset.prevColor || "steelblue";
     }
 }

@@ -5,31 +5,39 @@ export { STEP_TYPES }; // re-exported in case other files still import it from h
 
 let animationSteps = []; //which step will be executed
 let currentStepIndex = 0; //which step we are currently on
-let isPlaying = false; //whether the engine is in pause or play mode
+let animationState = "idle";
 
 //starting a new animation
-export async function playSteps(steps) {
-    if (isPlaying) return; // ignore calls while a run is already in progress
 
+export async function playSteps(steps) {
+    if (animationState !== "idle") {
+        return;
+    }
     animationSteps = steps;
     currentStepIndex = 0;
-    isPlaying = true;
 
-    await playNextStep(); //since playNextStep is an async function 
+    animationState = "playing";
+
+    await playNextStep();
 }
 
 //pausing an animation
 export function pauseAnimation() {
-    console.log("pause button pressed");
-    isPlaying = false;
+    if (animationState !== "playing") {
+        return;
+    }
+
+    animationState = "paused";
 }
 
 //for resuming the animation from the current index
 export async function resumeAnimation() {
-    if(isPlaying) //to prevent the engine from excuting the same step multiple times if we press the resume button more than once 
-        return; 
+    if (animationState !== "paused") {
+        return;
+    }
 
-    isPlaying = true;
+    animationState = "playing";
+
     await playNextStep();
 }
 
@@ -42,23 +50,23 @@ function sleep(ms) {
 
 //this will do the execution of the step one at a time 
 async function playNextStep() {
-    if (!isPlaying) {
-        return;
-    }
+    if (animationState !== "playing") {
+    return;
+}
     if (currentStepIndex >= animationSteps.length) {
-        isPlaying = false;
+        animationState = "idle";
         return;
     }
     await runSingleStep(true);
     // Pause button may have been pressed while waiting
-    if (!isPlaying) {
+    if (animationState !== "playing") {
         return;
     }
     await playNextStep();
 }
 
 export function resetAnimation() {
-    isPlaying = false;
+    animationState = "idle";
     animationSteps = [];
     currentStepIndex = 0;
 }
@@ -68,19 +76,23 @@ async function runSingleStep(allowPause = false) {
     const currentStep = animationSteps[currentStepIndex];
     renderStep(currentStep);
     await sleep(1000);
-    if (allowPause && !isPlaying) {
-        return;
-    }
+    if (allowPause && animationState !== "playing") {
+    return;
+}
     clearStep(currentStep);
     currentStepIndex++;
 }
 
 export async function stepForward() {
-     if (isPlaying) {
-        return;
-    }
+     if (animationState !== "paused") {
+    return;
+}
     if (currentStepIndex >= animationSteps.length) {
         return;
     }
     await runSingleStep(false);
+}
+
+export function getAnimationState() {
+    return animationState;
 }
