@@ -6,6 +6,7 @@ export { STEP_TYPES }; // re-exported in case other files still import it from h
 let animationSteps = []; //which step will be executed
 let currentStepIndex = 0; //which step we are currently on
 let animationState = "idle";
+let animationSpeed = 50;
 
 //starting a new animation
 
@@ -75,7 +76,9 @@ export function resetAnimation() {
 async function runSingleStep(allowPause = false) {
     const currentStep = animationSteps[currentStepIndex];
     renderStep(currentStep);
-    await sleep(1000);
+    //delay will be calculated based on the speed slider value
+    const delay = 1100 - animationSpeed * 10;
+    await sleep(delay);
     if (allowPause && animationState !== "playing") {
     return;
 }
@@ -95,4 +98,8 @@ export async function stepForward() {
 
 export function getAnimationState() {
     return animationState;
+}
+
+export function setAnimationSpeed(speed) {
+    animationSpeed = speed;
 }
