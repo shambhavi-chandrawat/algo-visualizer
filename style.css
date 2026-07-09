@@ -75,3 +75,11 @@ button,select{
 .bar.sorted {
     background-color: green;
 }
+
+.stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 25px;
+    font-size: 18px;
+    font-weight: 600;
+}

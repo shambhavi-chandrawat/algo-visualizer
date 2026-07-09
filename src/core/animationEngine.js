@@ -7,99 +7,141 @@ let animationSteps = []; //which step will be executed
 let currentStepIndex = 0; //which step we are currently on
 let animationState = "idle";
 let animationSpeed = 50;
+let comparisonCount = 0;
+let swapCount = 0;
+
+const comparisonElement = document.getElementById("comparison-count");
+const swapElement = document.getElementById("swap-count");
 
 //starting a new animation
 
 export async function playSteps(steps) {
-    if (animationState !== "idle") {
-        return;
-    }
-    animationSteps = steps;
-    currentStepIndex = 0;
+  console.log(steps);
+  if (animationState !== "idle") {
+    return;
+  }
+  comparisonCount = 0;
+  swapCount = 0;
 
-    animationState = "playing";
+  comparisonElement.textContent = 0;
+  swapElement.textContent = 0;
 
-    await playNextStep();
+  animationSteps = steps;
+  currentStepIndex = 0;
+
+  animationState = "playing";
+
+  await playNextStep();
 }
 
 //pausing an animation
 export function pauseAnimation() {
-    if (animationState !== "playing") {
-        return;
-    }
+  if (animationState !== "playing") {
+    return;
+  }
 
-    animationState = "paused";
+  animationState = "paused";
 }
 
 //for resuming the animation from the current index
 export async function resumeAnimation() {
-    if (animationState !== "paused") {
-        return;
-    }
+  if (animationState !== "paused") {
+    return;
+  }
 
-    animationState = "playing";
+  animationState = "playing";
 
-    await playNextStep();
+  await playNextStep();
 }
 
 //adding the sleep function
 function sleep(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
-//this will do the execution of the step one at a time 
+//this will do the execution of the step one at a time
 async function playNextStep() {
-    if (animationState !== "playing") {
+  if (animationState !== "playing") {
     return;
-}
-    if (currentStepIndex >= animationSteps.length) {
-        animationState = "idle";
-        return;
-    }
-    await runSingleStep(true);
-    // Pause button may have been pressed while waiting
-    if (animationState !== "playing") {
-        return;
-    }
-    await playNextStep();
+  }
+  if (currentStepIndex >= animationSteps.length) {
+    animationState = "idle";
+
+    const bars = document.querySelectorAll(".bar");
+
+    bars.forEach((bar) => {
+      bar.classList.add("sorted");
+    });
+
+    return;
+  }
+  await runSingleStep(true);
+  // Pause button may have been pressed while waiting
+  if (animationState !== "playing") {
+    return;
+  }
+  await playNextStep();
 }
 
 export function resetAnimation() {
-    animationState = "idle";
-    animationSteps = [];
-    currentStepIndex = 0;
+  comparisonCount = 0;
+  swapCount = 0;
+
+  comparisonElement.textContent = 0;
+  swapElement.textContent = 0;
+
+  animationState = "idle";
+  animationSteps = [];
+  currentStepIndex = 0;
+
+  const bars = document.querySelectorAll(".bar");
+
+  bars.forEach((bar) => {
+    bar.classList.remove("sorted");
+  });
 }
 
 // Executes exactly ONE step
 async function runSingleStep(allowPause = false) {
-    const currentStep = animationSteps[currentStepIndex];
-    renderStep(currentStep);
-    //delay will be calculated based on the speed slider value
-    const delay = 1100 - animationSpeed * 10;
-    await sleep(delay);
-    if (allowPause && animationState !== "playing") {
+  const currentStep = animationSteps[currentStepIndex];
+
+  if (currentStep.type === STEP_TYPES.COMPARE) {
+    comparisonCount++;
+    comparisonElement.textContent = comparisonCount;
+  }
+
+  if (currentStep.type === STEP_TYPES.SWAP) {
+    swapCount++;
+    swapElement.textContent = swapCount;
+  }
+
+  renderStep(currentStep);
+  //delay will be calculated based on the speed slider value
+  const delay = 1100 - animationSpeed * 10;
+  await sleep(delay);
+  if (allowPause && animationState !== "playing") {
     return;
-}
-    clearStep(currentStep);
-    currentStepIndex++;
+  }
+  clearStep(currentStep);
+  currentStepIndex++;
 }
 
 export async function stepForward() {
-     if (animationState !== "paused") {
+  if (animationState !== "paused") {
     return;
-}
-    if (currentStepIndex >= animationSteps.length) {
-        return;
-    }
-    await runSingleStep(false);
+  }
+  if (currentStepIndex >= animationSteps.length) {
+    return;
+  }
+  await runSingleStep(false);
 }
 
 export function getAnimationState() {
-    return animationState;
+  return animationState;
 }
 
 export function setAnimationSpeed(speed) {
-    animationSpeed = speed;
+  animationSpeed = speed;
 }

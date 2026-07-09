@@ -2,5 +2,6 @@
 export const STEP_TYPES = {
     COMPARE: "compare",
     SWAP: "swap",
-    SORTED: "sorted"
+    SORTED: "sorted",
+    OVERWRITE: "overwrite"
 }; 

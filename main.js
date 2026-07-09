@@ -3,6 +3,7 @@ import { playSteps, pauseAnimation, resumeAnimation, resetAnimation, stepForward
 import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 import { selectionSort } from "./src/algorithms/selectionSort.js";
 import { insertionSort} from "./src/algorithms/insertionSort.js";
+import { mergeSort } from "./src/algorithms/mergeSort.js";
 
 let currentArray = generateArray();
 renderArray(currentArray);
@@ -33,6 +34,9 @@ else if (algorithm === "selection") {
 }
 else if (algorithm === "insertion") {
     steps = insertionSort(currentArray);
+}
+else if (algorithm === "merge") {
+    steps = mergeSort(currentArray);
 }
 else {
         return;
