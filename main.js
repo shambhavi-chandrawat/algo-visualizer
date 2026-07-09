@@ -2,6 +2,7 @@ import { generateArray, renderArray } from "./src/core/array.js";
 import { playSteps, pauseAnimation, resumeAnimation, resetAnimation, stepForward, getAnimationState, setAnimationSpeed } from "./src/core/animationEngine.js";
 import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 import { selectionSort } from "./src/algorithms/selectionSort.js";
+import { insertionSort} from "./src/algorithms/insertionSort.js";
 
 let currentArray = generateArray();
 renderArray(currentArray);
@@ -28,6 +29,10 @@ if (algorithm === "bubble") {
 }
 else if (algorithm === "selection") {
     steps = selectionSort(currentArray);
+    
+}
+else if (algorithm === "insertion") {
+    steps = insertionSort(currentArray);
 }
 else {
         return;
