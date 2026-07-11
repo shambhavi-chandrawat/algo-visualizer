@@ -4,6 +4,7 @@ import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 import { selectionSort } from "./src/algorithms/selectionSort.js";
 import { insertionSort} from "./src/algorithms/insertionSort.js";
 import { mergeSort } from "./src/algorithms/mergeSort.js";
+import { quickSort } from "./src/algorithms/quickSort.js";
 
 let currentArray = generateArray();
 renderArray(currentArray);
@@ -37,6 +38,9 @@ else if (algorithm === "insertion") {
 }
 else if (algorithm === "merge") {
     steps = mergeSort(currentArray);
+}
+else if (algorithm === "quick") {
+    steps = quickSort(currentArray);
 }
 else {
         return;
