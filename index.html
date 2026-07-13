@@ -7,36 +7,124 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Algorithm Visualizer</h1>
+    <div id="home-page">
+      <body>
 
-    <div class="controls">
-      <select id="algorithm-select">
-        <option value="bubble">Bubble Sort</option>
-        <option value="selection">Selection Sort</option>
-        <option value="insertion">Insertion Sort</option>
-        <option value="merge">Merge Sort</option>
-        <option value="quick">Quick Sort</option>
-      </select>
+<div id="home-page">
+      <header class="hero">
+      <h1>Algorithm Visualizer</h1>
+      <p class="subtitle">Understand algorithms through interactive visualizations.</p>
+      </header>
+      <div class="algorithm-grid">
+      <div class="algorithm-card bubble" data-algorithm="bubble">
+        <div class="algorithm-content">
 
-      <button id="generate-btn">Generate New Array</button>
+    <h2 class="algorithm-title">
+        <span>Bubble</span>
+        <span>Sort</span>
+    </h2>
 
-      <button id="play-btn">Play</button>
+    <p class="explore">
+        Explore →
+    </p>
+</div>
+</div>
 
-      <button id="pause-btn">Pause</button>
+       <div class="algorithm-card selection" data-algorithm="selection">
+        <div class="algorithm-content">
 
-      <button id="resume-btn">Resume</button>
+    <h2 class="algorithm-title">
+        <span>Selection</span>
+        <span>Sort</span>
+    </h2>
 
-      <button id="reset-btn">Reset</button>
+    <p class="explore">
+        Explore →
+    </p>
+</div>
+</div>
 
-      <button id="step-btn">Step</button>
+        <div class="algorithm-card insertion" data-algorithm="insertion">
+          <div class="algorithm-content">
 
-      <input type="range" id="speed-slider" min="1" max="100" value="50" />
+    <h2 class="algorithm-title">
+        <span>Insertion</span>
+        <span>Sort</span>
+    </h2>
+
+    <p class="explore">
+        Explore →
+    </p>
+</div>
+</div>
+
+       <div class="algorithm-card merge" data-algorithm="merge">
+        <div class="algorithm-content">
+
+    <h2 class="algorithm-title">
+        <span>Merge</span>
+        <span>Sort</span>
+    </h2>
+
+    <p class="explore">
+        Explore →
+    </p>
+</div>
+</div>
+
+        <div class="algorithm-card quick" data-algorithm="quick">
+          <div class="algorithm-content">
+
+    <h2 class="algorithm-title">
+        <span>Quick</span>
+        <span>Sort</span>
+    </h2>
+
+    <p class="explore">
+        Explore →
+    </p>
+</div>
+</div>
+
+        <div class="algorithm-card compare-card compare">
+          <div class="algorithm-content">
+
+    <h2 class="algorithm-title">
+        Compare
+    </h2>
+
+    <p class="explore">
+        Coming Soon
+    </p>
+</div>
+</div>
+</div>
+      </div>
     </div>
-    <div id="array-container"></div>
 
-    <div class="stats">
-      <span>Comparisons: <strong id="comparison-count">0</strong></span>
-      <span>Swaps: <strong id="swap-count">0</strong></span>
+    <div id="visualizer-page">
+      <div class="controls">
+        <select id="algorithm-select">
+          <option value="bubble">Bubble Sort</option>
+          <option value="selection">Selection Sort</option>
+          <option value="insertion">Insertion Sort</option>
+          <option value="merge">Merge Sort</option>
+          <option value="quick">Quick Sort</option>
+        </select>
+
+        <button id="generate-btn">Generate New Array</button>
+        <button id="play-btn">Play</button>
+        <button id="pause-btn">Pause</button>
+        <button id="resume-btn">Resume</button>
+        <button id="reset-btn">Reset</button>
+        <button id="step-btn">Step</button>
+
+        <input type="range" id="speed-slider" min="1" max="100" value="50" />
+        <label for="size-slider">Array Size</label>
+        <input type="range" id="size-slider" min="10" max="80" value="40" />
+        <span id="size-value">40</span>
+      </div>
+      <div id="array-container"></div>
     </div>
 
     <script type="module" src="main.js"></script>

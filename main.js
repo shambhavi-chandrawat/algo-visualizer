@@ -1,8 +1,16 @@
 import { generateArray, renderArray } from "./src/core/array.js";
-import { playSteps, pauseAnimation, resumeAnimation, resetAnimation, stepForward, getAnimationState, setAnimationSpeed } from "./src/core/animationEngine.js";
+import {
+  playSteps,
+  pauseAnimation,
+  resumeAnimation,
+  resetAnimation,
+  stepForward,
+  getAnimationState,
+  setAnimationSpeed,
+} from "./src/core/animationEngine.js";
 import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 import { selectionSort } from "./src/algorithms/selectionSort.js";
-import { insertionSort} from "./src/algorithms/insertionSort.js";
+import { insertionSort } from "./src/algorithms/insertionSort.js";
 import { mergeSort } from "./src/algorithms/mergeSort.js";
 import { quickSort } from "./src/algorithms/quickSort.js";
 
@@ -17,66 +25,81 @@ const generateButton = document.getElementById("generate-btn");
 const resetButton = document.getElementById("reset-btn");
 const stepButton = document.getElementById("step-btn");
 const speedSlider = document.getElementById("speed-slider");
+const sizeSlider = document.getElementById("size-slider");
+const sizeValue = document.getElementById("size-value");
+
+sizeValue.textContent = sizeSlider.value;
 
 playButton.addEventListener("click", () => {
-    if (getAnimationState() !== "idle") {
-        return;
-    }
-    const algorithm = document.getElementById("algorithm-select").value;
+  if (getAnimationState() !== "idle") {
+    return;
+  }
+  const algorithm = document.getElementById("algorithm-select").value;
 
-let steps;
+  let steps;
 
-if (algorithm === "bubble") {
+  if (algorithm === "bubble") {
     steps = bubbleSort(currentArray);
-}
-else if (algorithm === "selection") {
+  } else if (algorithm === "selection") {
     steps = selectionSort(currentArray);
-    
-}
-else if (algorithm === "insertion") {
+  } else if (algorithm === "insertion") {
     steps = insertionSort(currentArray);
-}
-else if (algorithm === "merge") {
+  } else if (algorithm === "merge") {
     steps = mergeSort(currentArray);
-}
-else if (algorithm === "quick") {
+  } else if (algorithm === "quick") {
     steps = quickSort(currentArray);
-}
-else {
-        return;
-    }
+  } else {
+    return;
+  }
 
-playSteps(steps);
+  playSteps(steps);
 });
 
 pauseButton.addEventListener("click", () => {
-    pauseAnimation();
+  pauseAnimation();
 });
 
 resumeButton.addEventListener("click", () => {
-    resumeAnimation();
+  resumeAnimation();
 });
 
 generateButton.addEventListener("click", () => {
-    resetAnimation(); //reset the animation before generating a new array
-    playButton.disabled = false;
+  resetAnimation(); //reset the animation before generating a new array
+  playButton.disabled = false;
 
-    currentArray = generateArray(); // generate and store new array
-     originalArray = [...currentArray];
-    renderArray(currentArray);     // re-render the bars
+  currentArray = generateArray(); // generate and store new array
+  originalArray = [...currentArray];
+  renderArray(currentArray); // re-render the bars
 });
 
 resetButton.addEventListener("click", () => {
-    resetAnimation();
-    playButton.disabled = false;
-    currentArray = [...originalArray];
-    renderArray(currentArray);
+  resetAnimation();
+  playButton.disabled = false;
+  currentArray = [...originalArray];
+  renderArray(currentArray);
 });
 
 stepButton.addEventListener("click", () => {
-    stepForward();
+  stepForward();
 });
 
 speedSlider.addEventListener("input", () => {
-    setAnimationSpeed(Number(speedSlider.value));
+  setAnimationSpeed(Number(speedSlider.value));
+});
+
+sizeSlider.addEventListener("input", () => {
+
+    if (getAnimationState() !== "idle") {
+        return;
+    }
+  const size = Number(sizeSlider.value);
+
+  sizeValue.textContent = size;
+
+  resetAnimation();
+
+  currentArray = generateArray(size);
+  originalArray = [...currentArray];
+
+  renderArray(currentArray);
 });
