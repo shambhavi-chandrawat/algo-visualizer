@@ -28,13 +28,18 @@ const speedSlider = document.getElementById("speed-slider");
 const sizeSlider = document.getElementById("size-slider");
 const sizeValue = document.getElementById("size-value");
 
+const homePage = document.getElementById("home-page");
+const visualizerPage = document.getElementById("visualizer-page");
+const algorithmCards = document.querySelectorAll(".algorithm-card");
+const backBtn = document.getElementById("back-btn");
+
 sizeValue.textContent = sizeSlider.value;
 
 playButton.addEventListener("click", () => {
   if (getAnimationState() !== "idle") {
     return;
   }
-  const algorithm = document.getElementById("algorithm-select").value;
+  const algorithm = selectedAlgorithm;
 
   let steps;
 
@@ -88,10 +93,9 @@ speedSlider.addEventListener("input", () => {
 });
 
 sizeSlider.addEventListener("input", () => {
-
-    if (getAnimationState() !== "idle") {
-        return;
-    }
+  if (getAnimationState() !== "idle") {
+    return;
+  }
   const size = Number(sizeSlider.value);
 
   sizeValue.textContent = size;
@@ -102,4 +106,48 @@ sizeSlider.addEventListener("input", () => {
   originalArray = [...currentArray];
 
   renderArray(currentArray);
+});
+
+const algorithmNames = {
+  bubble: "Bubble Sort",
+  selection: "Selection Sort",
+  insertion: "Insertion Sort",
+  merge: "Merge Sort",
+  quick: "Quick Sort",
+};
+
+let selectedAlgorithm = "bubble";
+
+const currentAlgorithmHeading = document.getElementById("current-algorithm");
+
+algorithmCards.forEach((card) => {
+  card.addEventListener("click", () => {
+    const algorithm = card.dataset.algorithm;
+
+    if (!algorithm) {
+      alert("Comparison mode coming soon 🚀");
+      return;
+    }
+
+    selectedAlgorithm = algorithm;
+
+    currentAlgorithmHeading.textContent = algorithmNames[algorithm];
+
+    homePage.style.display = "none";
+    visualizerPage.style.display = "block";
+
+    resetAnimation();
+
+    playButton.disabled = false;
+
+    currentArray = generateArray(Number(sizeSlider.value));
+    originalArray = [...currentArray];
+
+    renderArray(currentArray);
+  });
+});
+
+backBtn.addEventListener("click", () => {
+  visualizerPage.style.display = "none";
+  homePage.style.display = "block";
 });
