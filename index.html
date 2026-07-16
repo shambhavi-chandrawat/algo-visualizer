@@ -104,42 +104,61 @@
     </div>
 
     <div id="visualizer-page">
-        <button id="back-btn" class="back-btn">
-            ← Back
-        </button>
 
-        <div class="controls">
-            <h2 id="current-algorithm"></h2>
+    <button id="back-btn" class="back-btn">
+        ← Back
+    </button>
 
+    <h1 id="current-algorithm" class="page-title">
+        Bubble Sort
+    </h1>
+
+    <div class="controls">
+
+        <div class="button-row">
             <button id="generate-btn">Generate New Array</button>
             <button id="play-btn">Play</button>
             <button id="pause-btn">Pause</button>
             <button id="resume-btn">Resume</button>
             <button id="reset-btn">Reset</button>
             <button id="step-btn">Step</button>
-
-            <input type="range" id="speed-slider" min="1" max="100" value="50" />
-            <label for="size-slider">Array Size</label>
-            <input type="range" id="size-slider" min="10" max="80" value="40" />
-            <span id="size-value">40</span>
         </div>
 
-        <div class="stats">
+        <div class="slider-group">
 
-            <span>
-                Comparisons:
-                <strong id="comparison-count">0</strong>
-            </span>
+            <div class="slider-item">
+                <label>Speed</label>
 
-            <span>
-                Swaps:
-                <strong id="swap-count">0</strong>
-            </span>
+                <input
+                    type="range"
+                    id="speed-slider"
+                    min="1"
+                    max="100"
+                    value="50"
+                />
+            </div>
+
+            <div class="slider-item">
+                <label>Array Size</label>
+
+                <input
+                    type="range"
+                    id="size-slider"
+                    min="10"
+                    max="80"
+                    value="40"
+                />
+
+                <span id="size-value">40</span>
+            </div>
 
         </div>
 
-        <div id="array-container"></div>
     </div>
+
+    <div id="array-container"></div>
+
+</div>
 
     <script type="module" src="main.js"></script>
 </body>
