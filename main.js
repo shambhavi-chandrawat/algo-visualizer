@@ -1,12 +1,13 @@
 import { generateArray, renderArray } from "./src/core/array.js";
 import {
-  playSteps,
-  pauseAnimation,
-  resumeAnimation,
-  resetAnimation,
-  stepForward,
-  getAnimationState,
-  setAnimationSpeed,
+    playSteps,
+    pauseAnimation,
+    resumeAnimation,
+    resetAnimation,
+    stepForward,
+    getAnimationState,
+    setAnimationSpeed,
+    setAnimationCompleteCallback
 } from "./src/core/animationEngine.js";
 import { bubbleSort } from "./src/algorithms/bubbleSort.js";
 import { selectionSort } from "./src/algorithms/selectionSort.js";
@@ -14,10 +15,25 @@ import { insertionSort } from "./src/algorithms/insertionSort.js";
 import { mergeSort } from "./src/algorithms/mergeSort.js";
 import { quickSort } from "./src/algorithms/quickSort.js";
 
-let currentArray = generateArray();
-renderArray(currentArray);
-let originalArray = [...currentArray];
+// --- State ---
+let currentArray = [];
+let originalArray = [];
+let selectedAlgorithm = "bubble";
 
+// --- Elements ---
+const homePage = document.getElementById("home-page");
+const visualizerPage = document.getElementById("visualizer-page");
+const algorithmCards = document.querySelectorAll(".algorithm-card");
+const backBtn = document.getElementById("back-btn");
+const currentAlgorithmHeading = document.getElementById("current-algorithm");
+const descriptionElement = document.getElementById("algorithm-description");
+const bestElement = document.getElementById("best-case");
+const averageElement = document.getElementById("average-case");
+const worstElement = document.getElementById("worst-case");
+const spaceElement = document.getElementById("space-complexity");
+const stableElement = document.getElementById("stable");
+const inplaceElement = document.getElementById("inplace");
+const complexityElement = document.getElementById("complexity");
 const playButton = document.getElementById("play-btn");
 const pauseButton = document.getElementById("pause-btn");
 const resumeButton = document.getElementById("resume-btn");
@@ -28,126 +44,156 @@ const speedSlider = document.getElementById("speed-slider");
 const sizeSlider = document.getElementById("size-slider");
 const sizeValue = document.getElementById("size-value");
 
-const homePage = document.getElementById("home-page");
-const visualizerPage = document.getElementById("visualizer-page");
-const algorithmCards = document.querySelectorAll(".algorithm-card");
-const backBtn = document.getElementById("back-btn");
-
-sizeValue.textContent = sizeSlider.value;
-
-playButton.addEventListener("click", () => {
-  if (getAnimationState() !== "idle") {
-    return;
-  }
-  const algorithm = selectedAlgorithm;
-
-  let steps;
-
-  if (algorithm === "bubble") {
-    steps = bubbleSort(currentArray);
-  } else if (algorithm === "selection") {
-    steps = selectionSort(currentArray);
-  } else if (algorithm === "insertion") {
-    steps = insertionSort(currentArray);
-  } else if (algorithm === "merge") {
-    steps = mergeSort(currentArray);
-  } else if (algorithm === "quick") {
-    steps = quickSort(currentArray);
-  } else {
-    return;
-  }
-
-  playSteps(steps);
-});
-
-pauseButton.addEventListener("click", () => {
-  pauseAnimation();
-});
-
-resumeButton.addEventListener("click", () => {
-  resumeAnimation();
-});
-
-generateButton.addEventListener("click", () => {
-  resetAnimation(); //reset the animation before generating a new array
-  playButton.disabled = false;
-
-  currentArray = generateArray(); // generate and store new array
-  originalArray = [...currentArray];
-  renderArray(currentArray); // re-render the bars
-});
-
-resetButton.addEventListener("click", () => {
-  resetAnimation();
-  playButton.disabled = false;
-  currentArray = [...originalArray];
-  renderArray(currentArray);
-});
-
-stepButton.addEventListener("click", () => {
-  stepForward();
-});
-
-speedSlider.addEventListener("input", () => {
-  setAnimationSpeed(Number(speedSlider.value));
-});
-
-sizeSlider.addEventListener("input", () => {
-  if (getAnimationState() !== "idle") {
-    return;
-  }
-  const size = Number(sizeSlider.value);
-
-  sizeValue.textContent = size;
-
-  resetAnimation();
-
-  currentArray = generateArray(size);
-  originalArray = [...currentArray];
-
-  renderArray(currentArray);
-});
-
-const algorithmNames = {
-  bubble: "Bubble Sort",
-  selection: "Selection Sort",
-  insertion: "Insertion Sort",
-  merge: "Merge Sort",
-  quick: "Quick Sort",
+// --- Algorithm metadata ---
+const algorithmData = {
+    bubble: {
+        name: "Bubble Sort",
+        description: "Repeatedly compares adjacent elements and swaps them until the array is sorted.",
+        best: "O(n)", average: "O(n²)", worst: "O(n²)",
+        space: "O(1)", stable: "Yes", inplace: "Yes"
+    },
+    selection: {
+        name: "Selection Sort",
+        description: "Repeatedly selects the smallest element from the unsorted portion and places it at its correct position.",
+        best: "O(n²)", average: "O(n²)", worst: "O(n²)",
+        space: "O(1)", stable: "No", inplace: "Yes"
+    },
+    insertion: {
+        name: "Insertion Sort",
+        description: "Builds the sorted array one element at a time by inserting each element into its correct position.",
+        best: "O(n)", average: "O(n²)", worst: "O(n²)",
+        space: "O(1)", stable: "Yes", inplace: "Yes"
+    },
+    merge: {
+        name: "Merge Sort",
+        description: "Recursively divides the array into halves, sorts them, and merges them back together.",
+        best: "O(n log n)", average: "O(n log n)", worst: "O(n log n)",
+        space: "O(n)", stable: "Yes", inplace: "No"
+    },
+    quick: {
+        name: "Quick Sort",
+        description: "Partitions the array around a pivot and recursively sorts the left and right partitions.",
+        best: "O(n log n)", average: "O(n log n)", worst: "O(n²)",
+        space: "O(log n)", stable: "No", inplace: "Yes"
+    }
 };
 
-let selectedAlgorithm = "bubble";
+// --- Navigation ---
+algorithmCards.forEach(card => {
+    card.addEventListener("click", () => {
+        const algorithm = card.dataset.algorithm;
+        if (!algorithm) {
+            alert("Comparison mode coming soon 🚀");
+            return;
+        }
 
-const currentAlgorithmHeading = document.getElementById("current-algorithm");
+        selectedAlgorithm = algorithm;
+        const data = algorithmData[algorithm];
 
-algorithmCards.forEach((card) => {
-  card.addEventListener("click", () => {
-    const algorithm = card.dataset.algorithm;
+        currentAlgorithmHeading.textContent = data.name;
+        descriptionElement.textContent = data.description;
+        bestElement.textContent = data.best;
+        averageElement.textContent = data.average;
+        worstElement.textContent = data.worst;
+        spaceElement.textContent = data.space;
+        stableElement.textContent = data.stable;
+        inplaceElement.textContent = data.inplace;
+        complexityElement.textContent = data.average;
 
-    if (!algorithm) {
-      alert("Comparison mode coming soon 🚀");
-      return;
-    }
+        homePage.style.display = "none";
+        visualizerPage.style.display = "block";
 
-    selectedAlgorithm = algorithm;
-
-    currentAlgorithmHeading.textContent = algorithmNames[algorithm];
-
-    homePage.style.display = "none";
-    visualizerPage.style.display = "block";
-
-    resetAnimation();
-
-    playButton.disabled = false;
-
-    currentArray = generateArray(Number(sizeSlider.value));
-    originalArray = [...currentArray];
-
-    renderArray(currentArray);
-  });
+        resetAnimation();
+        currentArray = generateArray(Number(sizeSlider.value));
+        originalArray = [...currentArray];
+        renderArray(currentArray);
+        unlockControls();
+    });
 });
 
 backBtn.addEventListener("click", () => {
-  visualizerPage.style.display = "none";
-  homePage.style.display = "block";
+    resetAnimation();
+    visualizerPage.style.display = "none";
+    homePage.style.display = "flex";  // ← matches the CSS declaration
 });
+
+// --- Controls ---
+playButton.addEventListener("click", () => {
+    if (getAnimationState() !== "idle") return;
+
+    const sorters = { bubble: bubbleSort, selection: selectionSort, insertion: insertionSort, merge: mergeSort, quick: quickSort };
+    const sorter = sorters[selectedAlgorithm];
+    if (!sorter) return;
+
+    const steps = sorter(currentArray);
+    lockControls();
+    playSteps(steps);
+});
+
+pauseButton.addEventListener("click", () => pauseAnimation());
+resumeButton.addEventListener("click", () => resumeAnimation());
+stepButton.addEventListener("click", () => stepForward());
+
+generateButton.addEventListener("click", () => {
+    resetAnimation();
+    currentArray = generateArray(Number(sizeSlider.value));
+    originalArray = [...currentArray];
+    renderArray(currentArray);
+    unlockControls();
+});
+
+resetButton.addEventListener("click", () => {
+    resetAnimation();
+    currentArray = [...originalArray];
+    renderArray(currentArray);
+    unlockControls();
+});
+
+speedSlider.addEventListener("input", () => {
+    setAnimationSpeed(Number(speedSlider.value));
+});
+
+sizeSlider.addEventListener("input", () => {
+    if (getAnimationState() !== "idle") return;
+    const size = Number(sizeSlider.value);
+    sizeValue.textContent = size;
+    resetAnimation();
+    currentArray = generateArray(size);
+    originalArray = [...currentArray];
+    renderArray(currentArray);
+});
+
+// --- Helpers ---
+function lockControls() {
+    generateButton.disabled = true;
+    sizeSlider.disabled = true;
+    playButton.disabled = true;
+}
+
+function unlockControls() {
+    generateButton.disabled = false;
+    sizeSlider.disabled = false;
+    playButton.disabled = false;
+}
+
+setAnimationCompleteCallback(() => unlockControls());
+
+// init
+sizeValue.textContent = sizeSlider.value;
+
+// ── THEME TOGGLE ──
+const themeToggle = document.getElementById("theme-toggle");
+const savedTheme = localStorage.getItem("theme") || "dark";
+
+applyTheme(savedTheme);
+
+themeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    applyTheme(current === "light" ? "dark" : "light");
+});
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    themeToggle.textContent = theme === "light" ? "🌙 Dark" : "☀️ Light";
+}

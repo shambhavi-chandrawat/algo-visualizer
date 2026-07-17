@@ -3,5 +3,6 @@ export const STEP_TYPES = {
     COMPARE: "compare",
     SWAP: "swap",
     SORTED: "sorted",
-    OVERWRITE: "overwrite"
+    OVERWRITE: "overwrite",
+    PIVOT: "pivot"
 }; 
