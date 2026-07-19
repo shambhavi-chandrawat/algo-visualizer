@@ -14,6 +14,7 @@ import { selectionSort } from "./src/algorithms/selectionSort.js";
 import { insertionSort } from "./src/algorithms/insertionSort.js";
 import { mergeSort } from "./src/algorithms/mergeSort.js";
 import { quickSort } from "./src/algorithms/quickSort.js";
+import { initializeGuide } from "./src/guide/guideUI.js";
 
 // --- State ---
 let currentArray = [];
@@ -196,4 +197,10 @@ function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
     themeToggle.textContent = theme === "light" ? "🌙 Dark" : "☀️ Light";
+}
+
+const guideText = document.getElementById("guide-text");
+export function setGuideMessage(message){
+   guideText.textContent = message;
+
 }
